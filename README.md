@@ -1,5 +1,5 @@
 # mmlogmonitor
-Mattermost Log Monitor (just couldnt stom myself)
+Mattermost Log Monitor (just couldnt stop myself)
 
 So after finishing the NextCloud to MatterMost bot gateway. I
 just could stop myself from writing a MatterMost Log monitor
