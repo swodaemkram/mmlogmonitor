@@ -22,8 +22,8 @@ using namespace std;
 char LogLocation[250] = {};   //A place to store the Log location
 char WebHookURL[250] = {};	 //A Place to put the WebHookURL
 char Filter[250] = {};       //A Place for the Filter
-char NewLogMessage[250] = {};
-char OldLogMessage[250] = {};
+char NewLogMessage[2250] = {};
+char OldLogMessage[2250] = {};
 char SendToWebHook[500] = {};
 char SentFromWhom[250] = {};
 
@@ -49,9 +49,6 @@ int main() {
 	while(1)							//This is going to be a service so forever loop
 		{
 			get_log_data();
-
-			printf("New Message = %s\n",NewLogMessage);
-			printf("Old Message = %s\n",OldLogMessage);
 
 			if (strcmp(NewLogMessage,OldLogMessage) != 0)
 
