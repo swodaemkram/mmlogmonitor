@@ -19,16 +19,11 @@
 
 using namespace std;
 
-void send_data_to_mattermost(void);
-void read_config(void);
-void log_function(string log_message);
-void get_log_data(void);
-
 char LogLocation[250] = {};   //A place to store the Log location
 char WebHookURL[250] = {};	 //A Place to put the WebHookURL
 char Filter[250] = {};       //A Place for the Filter
-char NewMessageFromLog[250] = {};
-char OldMessageFromLog[250] = {};
+char NewLogMessage[250] = {};
+char OldLogMessage[250] = {};
 char SendToWebHook[500] = {};
 char SentFromWhom[250] = {};
 
@@ -36,37 +31,41 @@ string logmessage = "";
 string Version = "mmlogmonitor Ver. 0.5.0";
 string ByWho = "By Mark Meadows";
 
+void send_data_to_mattermost(void);
+void read_config(void);
+void log_function(string log_message);
+void get_log_data(void);
+
 struct curl_slist *headers = NULL;
 
-size_t write_data(void *ptr, size_t size, size_t nmemb, FILE *stream) {
-    size_t written;
-    written = fwrite(ptr, size, nmemb, stream);
-    return written;
-}
-
-
 int main() {
+
 	read_config();//(completed)
 	logmessage = "mmlogmonitor has started";
 	log_function(logmessage);
 	logmessage ="";
 
+
 	while(1)							//This is going to be a service so forever loop
 		{
-			get_log_data();    //Get Log Data
+			get_log_data();
 
-			if (strcmp(NewMessageFromLog,OldMessageFromLog) != 0)
-				{
+			printf("New Message = %s\n",NewLogMessage);
+			printf("Old Message = %s\n",OldLogMessage);
+
+			if (strcmp(NewLogMessage,OldLogMessage) != 0)
+
+			    {
 				char * isinthere = {};
-				isinthere = strstr(NewMessageFromLog,Filter); //The filter is applied here
+				isinthere = strstr(NewLogMessage,Filter); //The filter is applied here
 				if (isinthere != NULL || strcmp(Filter,"none") == 0 || strcmp(Filter,"all") == 0) // and this allows for filter type none or all to send everything
 				{
-					log_function(NewMessageFromLog);
+					log_function(NewLogMessage);
 					send_data_to_mattermost();  //Send the gleaned data to MatterMost Server Via Web Hook(completed)
 				}
 			}
 
-
+			strcpy(OldLogMessage,NewLogMessage);
 			sleep(5);					//Speed of checking Log file set for every 5 seconds
 		}
 
@@ -90,7 +89,7 @@ void send_data_to_mattermost(void)
 		   //Sample Curl Command to post to mattermost
 		   //curl -i -X POST -H 'Content-Type: applicati/json' -d '{"text": "This is a test of the Matermost web hook system "}' http://talk.kyin.net/hooks/6c78zsda4fy
 
-           sprintf(SendToWebHook,"{\"text\": \"%s  %s\"}",NewMessageFromLog,SentFromWhom); //We have to escape all the JSON crap!
+           sprintf(SendToWebHook,"{\"text\": \"%s  %s\"}",NewLogMessage,SentFromWhom); //We have to escape all the JSON crap!
 
 		   curl_easy_setopt(curl, CURLOPT_URL,WebHookURL);
 		   curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0L); //Dont Check SSL Cert.
@@ -113,8 +112,8 @@ void send_data_to_mattermost(void)
 	       }
 
 		   curl_global_cleanup();
-		   strcpy(OldMessageFromLog,NewMessageFromLog);
-	return;
+		   strncpy(OldLogMessage,NewLogMessage,strlen(NewLogMessage));
+		   return;
 }
 /*
 ============================================================================================
@@ -150,7 +149,7 @@ void read_config(void)
 		 		log_function(logmessage1);
 		 		logmessage1 = "";
 		 		logmessage = "";
-		 		logmessage1 = "The Config File Say the RssURL = ";
+		 		logmessage1 = "The Config File Say the Log File Location = ";
 		 		std::string logmessage2 = LogLocation;
 		 		std::string logmessage = logmessage1 + logmessage2;
 		 		log_function(logmessage);
@@ -224,61 +223,28 @@ End of the Log Function
 void get_log_data(void)
 {
 
+					FILE *Log_File = NULL;                          // declare config file Pointer
 
-	FILE *Log_File = NULL;                        // declare config file Pointer
+			 		Log_File = fopen("/var/log/auth.log", "r");  	// Open config file
 
-			 		Log_File = fopen(LogLocation, "r");  	// Open config file
-			 		if (Log_File == NULL){
+			 		if (Log_File == NULL)
+			 		{
 			 			logmessage = "Could not open the requested log file";
 			 			log_function(logmessage);
 			 			printf("Could not open the requested log file\n");
 			 			exit(1);
 			 		}
 
-			 		fscanf(Log_File,"%[^\n]\n", LogLocation);      //This will Read to the end of each line until a carriage return
-			 		fscanf(Log_File,"%[^\n]\n", WebHookURL);	 //This will Read to the end of each line until a carriage return
-			 		fscanf(Log_File,"%[^\n]\n", Filter);		 //This will Read to the end of each line until a carriage return
-			 		fscanf(Log_File,"%[^\n]\n",SentFromWhom); //This will Read to the end of each line until a carriage return
+
+			 		while(!feof(Log_File))
+
+			 		{
+
+			 			fscanf(Log_File,"%[^\n]\n", NewLogMessage);      //Read a line from the log
+
+			 		}
 
 			 		fclose(Log_File);
-			 		std::string logmessage1 = "=============================================================";
-			 		log_function(logmessage1);
-			 		log_function(Version);
-			 		log_function(ByWho);
-			 		log_function(logmessage1);
-			 		logmessage1 = "";
-			 		logmessage = "";
-			 		logmessage1 = "The Config File Say the RssURL = ";
-			 		std::string logmessage2 = LogLocation;
-			 		std::string logmessage = logmessage1 + logmessage2;
-			 		log_function(logmessage);
-			 		logmessage1 = "";
-			 		logmessage2 = "";
-			 		logmessage = "";
-			 		logmessage1 = "The Config File Say the WebHookURL = ";
-			 		logmessage2 = WebHookURL;
-			 		logmessage = logmessage1 + logmessage2;
-			 		log_function(logmessage);
-			 		logmessage1 = "";
-			 		logmessage2 = "";
-			 		logmessage = "";
-			 		logmessage1 = "The Config File Say the Filter = ";
-			 		logmessage2 = Filter;
-			 		logmessage = logmessage1 + logmessage2;
-			 		log_function(logmessage);
-			 		logmessage1 = "";
-			 		logmessage2 = "";
-			 		logmessage = "";
-			 		logmessage1 = "The Config File Say the SentFromWhom = ";
-			 		logmessage2 = SentFromWhom;
-			 		logmessage = logmessage1 + logmessage2;
-			 		log_function(logmessage);
-			 		logmessage1 = "";
-			 		logmessage2 = "";
-			 		logmessage = "";
-			 		logmessage = "Config File Loaded ...";
-			 		log_function(logmessage);
-			 		logmessage = "";
 
 		return;
 
