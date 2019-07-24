@@ -223,10 +223,68 @@ End of the Log Function
  */
 void get_log_data(void)
 {
-	return;
+
+
+	FILE *Log_File = NULL;                        // declare config file Pointer
+
+			 		Log_File = fopen(LogLocation, "r");  	// Open config file
+			 		if (Log_File == NULL){
+			 			logmessage = "Could not open the requested log file";
+			 			log_function(logmessage);
+			 			printf("Could not open the requested log file\n");
+			 			exit(1);
+			 		}
+
+			 		fscanf(Log_File,"%[^\n]\n", LogLocation);      //This will Read to the end of each line until a carriage return
+			 		fscanf(Log_File,"%[^\n]\n", WebHookURL);	 //This will Read to the end of each line until a carriage return
+			 		fscanf(Log_File,"%[^\n]\n", Filter);		 //This will Read to the end of each line until a carriage return
+			 		fscanf(Log_File,"%[^\n]\n",SentFromWhom); //This will Read to the end of each line until a carriage return
+
+			 		fclose(Log_File);
+			 		std::string logmessage1 = "=============================================================";
+			 		log_function(logmessage1);
+			 		log_function(Version);
+			 		log_function(ByWho);
+			 		log_function(logmessage1);
+			 		logmessage1 = "";
+			 		logmessage = "";
+			 		logmessage1 = "The Config File Say the RssURL = ";
+			 		std::string logmessage2 = LogLocation;
+			 		std::string logmessage = logmessage1 + logmessage2;
+			 		log_function(logmessage);
+			 		logmessage1 = "";
+			 		logmessage2 = "";
+			 		logmessage = "";
+			 		logmessage1 = "The Config File Say the WebHookURL = ";
+			 		logmessage2 = WebHookURL;
+			 		logmessage = logmessage1 + logmessage2;
+			 		log_function(logmessage);
+			 		logmessage1 = "";
+			 		logmessage2 = "";
+			 		logmessage = "";
+			 		logmessage1 = "The Config File Say the Filter = ";
+			 		logmessage2 = Filter;
+			 		logmessage = logmessage1 + logmessage2;
+			 		log_function(logmessage);
+			 		logmessage1 = "";
+			 		logmessage2 = "";
+			 		logmessage = "";
+			 		logmessage1 = "The Config File Say the SentFromWhom = ";
+			 		logmessage2 = SentFromWhom;
+			 		logmessage = logmessage1 + logmessage2;
+			 		log_function(logmessage);
+			 		logmessage1 = "";
+			 		logmessage2 = "";
+			 		logmessage = "";
+			 		logmessage = "Config File Loaded ...";
+			 		log_function(logmessage);
+			 		logmessage = "";
+
+		return;
+
 }
 /*
 ================================================================================================
-End of get log file
+End of get data from log file
 ================================================================================================
  */
