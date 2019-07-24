@@ -28,7 +28,7 @@ char SendToWebHook[500] = {};
 char SentFromWhom[250] = {};
 
 string logmessage = "";
-string Version = "mmlogmonitor Ver. 0.5.0";
+string Version = "mmlogmonitor Ver. 0.8.0";
 string ByWho = "By Mark Meadows";
 
 void send_data_to_mattermost(void);
@@ -222,9 +222,11 @@ void get_log_data(void)
 
 					FILE *Log_File = NULL;                          // declare config file Pointer
 
-			 		Log_File = fopen("/var/log/auth.log", "r");  	// Open config file
+			 		//Log_File = fopen("/var/log/auth.log", "r");  	// Open config file
 
-			 		if (Log_File == NULL)
+			 		Log_File = fopen(LogLocation,"r");
+
+					if (Log_File == NULL)
 			 		{
 			 			logmessage = "Could not open the requested log file";
 			 			log_function(logmessage);
