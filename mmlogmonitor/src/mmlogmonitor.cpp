@@ -47,7 +47,7 @@ size_t write_data(void *ptr, size_t size, size_t nmemb, FILE *stream) {
 
 int main() {
 	read_config();//(completed)
-	logmessage = "ncrss2mmd has started";
+	logmessage = "mmlogmonitor has started";
 	log_function(logmessage);
 	logmessage ="";
 
