@@ -46,28 +46,28 @@ int main() {
 	logmessage ="";
 
 
-	while(1)							//This is going to be a service so forever loop
-		{
-			get_log_data();
+while(1)							//This is going to be a service so forever loop
+	{
+		get_log_data();
 
-			if (strcmp(NewLogMessage,OldLogMessage) != 0)
+		if (strcmp(NewLogMessage,OldLogMessage) != 0)
 
-			    {
-				char * isinthere = {};
-				isinthere = strstr(NewLogMessage,Filter); //The filter is applied here
-				if (isinthere != NULL || strcmp(Filter,"none") == 0 || strcmp(Filter,"all") == 0) // and this allows for filter type none or all to send everything
-				{
-					log_function(NewLogMessage);
-					send_data_to_mattermost();  //Send the gleaned data to MatterMost Server Via Web Hook(completed)
-				}
+		    {
+			char * isinthere = {};
+			isinthere = strstr(NewLogMessage,Filter); //The filter is applied here
+			if (isinthere != NULL || strcmp(Filter,"none") == 0 || strcmp(Filter,"all") == 0) // and this allows for filter type none or all to send everything
+			{
+				log_function(NewLogMessage);
+				send_data_to_mattermost();  //Send the gleaned data to MatterMost Server Via Web Hook(completed)
 			}
-
-			strcpy(OldLogMessage,NewLogMessage);
-			sleep(5);					//Speed of checking Log file set for every 5 seconds
 		}
 
+		strcpy(OldLogMessage,NewLogMessage);
+		sleep(5);					//Speed of checking Log file set for every 5 seconds
+	}
 
-	return 0;
+
+return 0;
 }
 /*
 ===============================================================================================
@@ -110,7 +110,7 @@ void send_data_to_mattermost(void)
 
 		   curl_global_cleanup();
 		   strncpy(OldLogMessage,NewLogMessage,strlen(NewLogMessage));
-		   return;
+return;
 }
 /*
 ============================================================================================
@@ -123,62 +123,62 @@ void read_config(void)
 {
 	//With only a few lines in the config file we will just make a conf "text" file
 	//We will put it in the normal place /etc and we will call it ncrssmmd.conf
-	FILE *Config_File = NULL;                        // declare config file Pointer
+FILE *Config_File = NULL;                        // declare config file Pointer
 
-		 		Config_File = fopen("/etc/mmlogmonitor.conf", "r");  	// Open config file
-		 		if (Config_File == NULL){
-		 			logmessage = "Could not open configuration file";
-		 			log_function(logmessage);
-		 			printf("Could not open Config File\n");
-		 			exit(1);
-		 		}
+	 		Config_File = fopen("/etc/mmlogmonitor.conf", "r");  	// Open config file
+	 		if (Config_File == NULL){
+	 			logmessage = "Could not open configuration file";
+	 			log_function(logmessage);
+	 			printf("Could not open Config File\n");
+	 			exit(1);
+	 		}
 
-		 		fscanf(Config_File,"%[^\n]\n", LogLocation);      //This will Read to the end of each line until a carriage return
-		 		fscanf(Config_File,"%[^\n]\n", WebHookURL);	 //This will Read to the end of each line until a carriage return
-		 		fscanf(Config_File,"%[^\n]\n", Filter);		 //This will Read to the end of each line until a carriage return
-		 		fscanf(Config_File,"%[^\n]\n",SentFromWhom); //This will Read to the end of each line until a carriage return
+	 		fscanf(Config_File,"%[^\n]\n", LogLocation);      //This will Read to the end of each line until a carriage return
+	 		fscanf(Config_File,"%[^\n]\n", WebHookURL);	 //This will Read to the end of each line until a carriage return
+	 		fscanf(Config_File,"%[^\n]\n", Filter);		 //This will Read to the end of each line until a carriage return
+	 		fscanf(Config_File,"%[^\n]\n",SentFromWhom); //This will Read to the end of each line until a carriage return
 
-		 		fclose(Config_File);
-		 		std::string logmessage1 = "=============================================================";
-		 		log_function(logmessage1);
-		 		log_function(Version);
-		 		log_function(ByWho);
-		 		log_function(logmessage1);
-		 		logmessage1 = "";
-		 		logmessage = "";
-		 		logmessage1 = "The Config File Say the Log File Location = ";
-		 		std::string logmessage2 = LogLocation;
-		 		std::string logmessage = logmessage1 + logmessage2;
-		 		log_function(logmessage);
-		 		logmessage1 = "";
-		 		logmessage2 = "";
-		 		logmessage = "";
-		 		logmessage1 = "The Config File Say the WebHookURL = ";
-		 		logmessage2 = WebHookURL;
-		 		logmessage = logmessage1 + logmessage2;
-		 		log_function(logmessage);
-		 		logmessage1 = "";
-		 		logmessage2 = "";
-		 		logmessage = "";
-		 		logmessage1 = "The Config File Say the Filter = ";
-		 		logmessage2 = Filter;
-		 		logmessage = logmessage1 + logmessage2;
-		 		log_function(logmessage);
-		 		logmessage1 = "";
-		 		logmessage2 = "";
-		 		logmessage = "";
-		 		logmessage1 = "The Config File Say the SentFromWhom = ";
-		 		logmessage2 = SentFromWhom;
-		 		logmessage = logmessage1 + logmessage2;
-		 		log_function(logmessage);
-		 		logmessage1 = "";
-		 		logmessage2 = "";
-		 		logmessage = "";
-		 		logmessage = "Config File Loaded ...";
-		 		log_function(logmessage);
-		 		logmessage = "";
+	 		fclose(Config_File);
+	 		std::string logmessage1 = "=============================================================";
+	 		log_function(logmessage1);
+	 		log_function(Version);
+	 		log_function(ByWho);
+	 		log_function(logmessage1);
+	 		logmessage1 = "";
+	 		logmessage = "";
+	 		logmessage1 = "The Config File Say the Log File Location = ";
+	 		std::string logmessage2 = LogLocation;
+	 		std::string logmessage = logmessage1 + logmessage2;
+	 		log_function(logmessage);
+	 		logmessage1 = "";
+	 		logmessage2 = "";
+	 		logmessage = "";
+	 		logmessage1 = "The Config File Say the WebHookURL = ";
+	 		logmessage2 = WebHookURL;
+	 		logmessage = logmessage1 + logmessage2;
+	 		log_function(logmessage);
+	 		logmessage1 = "";
+	 		logmessage2 = "";
+	 		logmessage = "";
+	 		logmessage1 = "The Config File Say the Filter = ";
+	 		logmessage2 = Filter;
+	 		logmessage = logmessage1 + logmessage2;
+	 		log_function(logmessage);
+	 		logmessage1 = "";
+	 		logmessage2 = "";
+	 		logmessage = "";
+	 		logmessage1 = "The Config File Say the SentFromWhom = ";
+	 		logmessage2 = SentFromWhom;
+	 		logmessage = logmessage1 + logmessage2;
+	 		log_function(logmessage);
+	 		logmessage1 = "";
+	 		logmessage2 = "";
+	 		logmessage = "";
+	 		logmessage = "Config File Loaded ...";
+	 		log_function(logmessage);
+	 		logmessage = "";
 
-	return;
+return;
 }
 /*
 ============================================================================================
@@ -207,7 +207,7 @@ void log_function(string log_message)
 		file<<"\n";
 		file.close();
 
-		return;
+return;
 
 }
 /*
@@ -220,32 +220,31 @@ End of the Log Function
 void get_log_data(void)
 {
 
-					FILE *Log_File = NULL;                          // declare config file Pointer
+		FILE *Log_File = NULL;                          // declare config file Pointer
+ 		//Log_File = fopen("/var/log/auth.log", "r");  	// Open config file
 
-			 		//Log_File = fopen("/var/log/auth.log", "r");  	// Open config file
+ 		Log_File = fopen(LogLocation,"r");
 
-			 		Log_File = fopen(LogLocation,"r");
-
-					if (Log_File == NULL)
-			 		{
-			 			logmessage = "Could not open the requested log file";
-			 			log_function(logmessage);
-			 			printf("Could not open the requested log file\n");
-			 			exit(1);
-			 		}
+		if (Log_File == NULL)
+	 		{
+	 			logmessage = "Could not open the requested log file";
+	 			log_function(logmessage);
+	 			printf("Could not open the requested log file\n");
+	 			exit(1);
+	 		}
 
 
-			 		while(!feof(Log_File))
+	 		while(!feof(Log_File))
 
-			 		{
+	 		{
 
-			 			fscanf(Log_File,"%[^\n]\n", NewLogMessage);      //Read a line from the log
+	 			fscanf(Log_File,"%[^\n]\n", NewLogMessage);      //Read a line from the log
 
-			 		}
+	 		}
 
-			 		fclose(Log_File);
+	 		fclose(Log_File);
 
-		return;
+return;
 
 }
 /*
